@@ -20,7 +20,18 @@ public class Main {
             System.out.println(rootPath.relativize(filename.toPath()));
             var dps = findDependencies(rootPath, filename);
             dependencyGraph.addDependencies(filename, dps);
-//            System.out.println(dps);
+        }
+
+        if (dependencyGraph.hasCycles()) {
+            System.out.println("Bad graph, bye-bye!");
+            return;
+        }
+
+        List<File> lst = dependencyGraph.toOrderedList();
+        for (var fileObject : lst) {
+            for (var line : Files.readAllLines(fileObject.toPath())) {
+                System.out.println(line);
+            }
         }
     }
 
