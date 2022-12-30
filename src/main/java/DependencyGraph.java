@@ -1,4 +1,3 @@
-import javax.naming.OperationNotSupportedException;
 import java.util.*;
 
 public class DependencyGraph<T> {
@@ -8,26 +7,36 @@ public class DependencyGraph<T> {
      */
     private final HashMap<T, List<T>> data = new HashMap<>();
 
+    void add(T key) {
+        if (!data.containsKey(key)) {
+            data.put(key, new ArrayList<>());
+        }
+    }
     void addDependency(T dependent, T dependency) {
-        if (!data.containsKey(dependent)) {
-            data.put(dependent, new ArrayList<>());
-        }
-
+        add(dependent);
+        add(dependency);
         data.get(dependent).add(dependency);
-
-        if (!data.containsKey(dependency)) {
-            data.put(dependency, new ArrayList<>());
-        }
     }
 
     void addDependencies(T dependent, Collection<T> dependencies) {
         for (T dependency : dependencies) {
             addDependency(dependent, dependency);
         }
+
+        if (dependencies.isEmpty()) {
+            add(dependent);
+        }
+    }
+
+    void remove(T key) {
+        data.remove(key);
+        for (var val : data.values()) {
+            val.remove(key);
+        }
     }
 
     List<T> getDependencies(T dependent) {
-        return data.get(dependent);
+        return new ArrayList<>(data.get(dependent));
     }
 
     private void dfs(HashMap<T, Boolean> visited, ArrayList<T> answer, T key) {
@@ -48,7 +57,7 @@ public class DependencyGraph<T> {
         }
 
         for (var key : data.keySet()) {
-            if (checkCycles(visited, key)) {
+            if (visited.get(key) == 0 && trySort(visited, null, key)) {
                 return true;
             }
         }
@@ -56,19 +65,23 @@ public class DependencyGraph<T> {
         return false;
     }
 
-    boolean checkCycles(HashMap<T, Integer> visited, T key) {
+    boolean trySort(HashMap<T, Integer> visited, ArrayList<T> answer, T key) {
         visited.put(key, 1);
         for (var neighbour : data.get(key)) {
             if (visited.get(neighbour) == 0) {
-                if (checkCycles(visited, neighbour)) return true;
+                if (trySort(visited, answer, neighbour)) return true;
             } else if (visited.get(neighbour) == 1) {
                 return true;
             }
         }
         visited.put(key, 2);
+        if (answer != null) {
+            answer.add(key);
+        }
         return false;
     }
 
+    // TODO: поведение сортировки при равных уровнях зависимостей
     List<T> toOrderedList() {
         ArrayList<T> answer = new ArrayList<>();
         HashMap<T, Boolean> visited = new HashMap<>();
