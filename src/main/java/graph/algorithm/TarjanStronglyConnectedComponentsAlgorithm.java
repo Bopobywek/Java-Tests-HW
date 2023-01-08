@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Класс, реализующий алгоритм Тарьяна для поиска компонент сильной связности.
- * Материал был взят из следующих источников
+ * Материал был взят из следующих источников:
  * <a href="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm">wikipedia<a/>,
  * <a href="https://github.com/mission-peace/interview/blob/master/src/com/interview/graph/TarjanStronglyConnectedComponent.java">github<a/>
  *

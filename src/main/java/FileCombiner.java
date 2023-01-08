@@ -165,9 +165,10 @@ public class FileCombiner {
             System.out.println("Not enough rights to get an absolute path. " +
                     "Please, restart the program with administrator rights.");
         } catch (IOException ioException) {
-            System.out.println("When trying to combine files, a write error occurred." +
-                    " Please, make sure that the path to the specified file exists" +
-                    " (the output file itself may not exist, in which case it will be created by the program)");
+            System.out.println("""
+                    When trying to combine files, a write error occurred.
+                    Please, make sure that the path to the specified file exists and the program has enough rights
+                    (the output file itself may not exist, in which case it will be created by the program)""");
         }
 
         return false;
