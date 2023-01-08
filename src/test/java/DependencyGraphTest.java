@@ -1,3 +1,5 @@
+import util.DependencyGraph;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +40,7 @@ class DependencyGraphTest {
         assertSame(true, graph.hasCycles());
     }
     @org.junit.jupiter.api.Test
-    void withoutCycles() {
+    void withoutCycles1() {
         DependencyGraph<Integer> graph = new DependencyGraph<>();
         graph.addDependency(11, 7);
         graph.addDependency(11, 5);
@@ -49,6 +51,21 @@ class DependencyGraphTest {
         graph.addDependency(10, 11);
         graph.addDependency(9, 8);
         graph.addDependency(10, 3);
+        assertSame(false, graph.hasCycles());
+    }
+    @org.junit.jupiter.api.Test
+    void withoutCycles2() {
+        /*
+        0 --> 1
+        |     |
+        ∨     ∨
+        2 --> 3
+         */
+        DependencyGraph<Integer> graph = new DependencyGraph<>();
+        graph.addDependency(1, 0);
+        graph.addDependency(2, 0);
+        graph.addDependency(3, 1);
+        graph.addDependency(3, 2);
         assertSame(false, graph.hasCycles());
     }
 
@@ -65,7 +82,7 @@ class DependencyGraphTest {
         graph.addDependency(9, 8);
         graph.addDependency(10, 3);
         var result = graph.toOrderedList();
-        assertSame(true, isTopologicalSortValid(graph, result));
+        assertSame(true, isValidTopologicalSort(graph, result));
     }
 
     @org.junit.jupiter.api.Test
@@ -81,7 +98,7 @@ class DependencyGraphTest {
         graph.addDependency(9, 8);
         graph.addDependency(10, 3);
         var result = new Integer[] {10, 3, 9, 8, 11, 2, 7, 5};
-        assertSame(false, isTopologicalSortValid(graph, Arrays.stream(result).toList()));
+        assertSame(false, isValidTopologicalSort(graph, Arrays.stream(result).toList()));
     }
 
     /**
@@ -91,7 +108,7 @@ class DependencyGraphTest {
      * @return {@code true}, если объекты отсортированы в топологическом порядке, иначе {@code false}
      * @param <T> тип объектов.
      */
-    <T> boolean isTopologicalSortValid(DependencyGraph<T> graph, List<T> sortedObjects) {
+    <T> boolean isValidTopologicalSort(DependencyGraph<T> graph, List<T> sortedObjects) {
         for (T key : sortedObjects) {
             if (!graph.getDependencies(key).isEmpty()) {
                 return false;

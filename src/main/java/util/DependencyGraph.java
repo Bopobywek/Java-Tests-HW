@@ -1,3 +1,5 @@
+package util;
+
 import java.util.*;
 
 public class DependencyGraph<T> {
@@ -7,18 +9,18 @@ public class DependencyGraph<T> {
      */
     private final HashMap<T, List<T>> data = new HashMap<>();
 
-    void add(T key) {
+    public void add(T key) {
         if (!data.containsKey(key)) {
             data.put(key, new ArrayList<>());
         }
     }
-    void addDependency(T dependent, T dependency) {
+    public void addDependency(T dependent, T dependency) {
         add(dependent);
         add(dependency);
         data.get(dependent).add(dependency);
     }
 
-    void addDependencies(T dependent, Collection<T> dependencies) {
+    public void addDependencies(T dependent, Collection<T> dependencies) {
         for (T dependency : dependencies) {
             addDependency(dependent, dependency);
         }
@@ -28,14 +30,14 @@ public class DependencyGraph<T> {
         }
     }
 
-    void remove(T key) {
+    public void remove(T key) {
         data.remove(key);
         for (var val : data.values()) {
             val.remove(key);
         }
     }
 
-    List<T> getDependencies(T dependent) {
+    public List<T> getDependencies(T dependent) {
         return new ArrayList<>(data.get(dependent));
     }
 
@@ -50,7 +52,7 @@ public class DependencyGraph<T> {
         answer.add(key);
     }
 
-    boolean hasCycles() {
+    public boolean hasCycles() {
         HashMap<T, Integer> visited = new HashMap<>();
         for (var key : data.keySet()) {
             visited.put(key, 0);
@@ -65,7 +67,7 @@ public class DependencyGraph<T> {
         return false;
     }
 
-    boolean trySort(HashMap<T, Integer> visited, ArrayList<T> answer, T key) {
+    private boolean trySort(HashMap<T, Integer> visited, ArrayList<T> answer, T key) {
         visited.put(key, 1);
         for (var neighbour : data.get(key)) {
             if (visited.get(neighbour) == 0) {
@@ -81,11 +83,14 @@ public class DependencyGraph<T> {
         return false;
     }
 
-    // TODO: поведение сортировки при равных уровнях зависимостей
-    List<T> toOrderedList() {
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
+
+    public List<T> toOrderedList() {
         ArrayList<T> answer = new ArrayList<>();
         HashMap<T, Boolean> visited = new HashMap<>();
-        for (var key : data.keySet()) {
+        for (var key : data.keySet().stream().sorted().toList()) {
             visited.put(key, false);
         }
 
