@@ -77,7 +77,7 @@ public class FileUtils {
      * @return файлы в директории и всех её поддиректориях, если в качестве параметра {@code file} была
      * передана директория. Иначе возвращается список из одного элемента -- переданного файла.
      * @throws SecurityException если возникла ошибка при попытке прочитать содержимое директории/при попытке
-     * обратиться к файлу.
+     *                           обратиться к файлу.
      */
     public static List<File> getAllFiles(File file) throws SecurityException {
         ArrayList<File> files = new ArrayList<>();

@@ -4,6 +4,7 @@ import java.util.*;
 
 /**
  * Класс, реализующий алгоритм тополгоической сортировки.
+ *
  * @param <T> тип значений-вершин в графе.
  */
 public class TopologicalSortAlgorithm<T> {
@@ -30,6 +31,7 @@ public class TopologicalSortAlgorithm<T> {
 
     /**
      * Запускает обход в глубину от вершины {@code key}.
+     *
      * @param key вершина, от которой запускается обход.
      */
     private void runDepthFirstSearch(T key) {
@@ -45,6 +47,7 @@ public class TopologicalSortAlgorithm<T> {
 
     /**
      * Возвращает список вершин в топологическом порядке.
+     *
      * @param graphRepresentation представление графа в виде списка смежности.
      * @return список вершин в топологическом порядке.
      */
