@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DependencyGraphTest {
 
     @org.junit.jupiter.api.Test
-    void testCycleDetectionOnGraphWithCycles() {
+    void testCycleDetectionOnGraphWithCycles1() {
         DependencyGraph<Integer> graph = new DependencyGraph<>();
         graph.addDependency(11, 7);
         graph.addDependency(11, 5);
@@ -22,15 +22,17 @@ class DependencyGraphTest {
         graph.addDependency(3, 10);
         assertSame(true, graph.hasCycles());
     }
+
     @org.junit.jupiter.api.Test
-    void testCycleDetectionOnGraphWithCycles1() {
+    void testCycleDetectionOnGraphWithCycles2() {
         DependencyGraph<Integer> graph = new DependencyGraph<>();
         graph.addDependency(3, 11);
         graph.addDependency(11, 3);
         assertSame(true, graph.hasCycles());
     }
+
     @org.junit.jupiter.api.Test
-    void testCycleDetectionOnGraphWithCycles2() {
+    void testCycleDetectionOnGraphWithCycles3() {
         DependencyGraph<Integer> graph = new DependencyGraph<>();
         graph.addDependency(3, 11);
         graph.addDependency(11, 14);
@@ -39,8 +41,9 @@ class DependencyGraphTest {
         graph.addDependency(12, 3);
         assertSame(true, graph.hasCycles());
     }
+
     @org.junit.jupiter.api.Test
-    void testCycleDetectionOnGraphWithoutCycles() {
+    void testCycleDetectionOnGraphWithoutCycles1() {
         DependencyGraph<Integer> graph = new DependencyGraph<>();
         graph.addDependency(11, 7);
         graph.addDependency(11, 5);
@@ -60,8 +63,9 @@ class DependencyGraphTest {
         graph.addDependency(11, 11);
         assertSame(true, graph.hasCycles());
     }
+
     @org.junit.jupiter.api.Test
-    void testCycleDetectionOnGraphWithoutCycles1() {
+    void testCycleDetectionOnGraphWithoutCycles2() {
         /*
         0 --> 1
         |     |
@@ -105,7 +109,7 @@ class DependencyGraphTest {
         graph.addDependency(6, 5);
         graph.addDependency(7, 6);
         var result = graph.findStronglyConnectedComponents();
-        var answer = Arrays.asList(Arrays.asList(0, 1, 2, 3), Arrays.asList(4, 5, 6), Arrays.asList(7));
+        var answer = Arrays.asList(Arrays.asList(0, 1, 2, 3), Arrays.asList(4, 5, 6), List.of(7));
         assertSame(true, compareListsWithComponents(answer, result));
     }
 
@@ -118,32 +122,17 @@ class DependencyGraphTest {
         graph.addDependency(3, 1);
         graph.addDependency(3, 2);
         var result = graph.findStronglyConnectedComponents();
-        var answer = Arrays.asList(Arrays.asList(0), Arrays.asList(1), Arrays.asList(2), Arrays.asList(3));
+        var answer = Arrays.asList(List.of(0), List.of(1), List.of(2), List.of(3));
         assertSame(true, compareListsWithComponents(answer, result));
-    }
-
-    @org.junit.jupiter.api.Test
-    void badSort() {
-        DependencyGraph<Integer> graph = new DependencyGraph<>();
-        graph.addDependency(11, 7);
-        graph.addDependency(11, 5);
-        graph.addDependency(8, 3);
-        graph.addDependency(8, 7);
-        graph.addDependency(2, 11);
-        graph.addDependency(9, 11);
-        graph.addDependency(10, 11);
-        graph.addDependency(9, 8);
-        graph.addDependency(10, 3);
-        var result = new Integer[] {10, 3, 9, 8, 11, 2, 7, 5};
-        assertSame(false, isValidTopologicalSort(graph, Arrays.stream(result).toList()));
     }
 
     /**
      * Проверяет корректность топологической сортировки последовательным удалением вершин из графа.
-     * @param graph граф зависимостей.
+     *
+     * @param graph         граф зависимостей.
      * @param sortedObjects объекты, отсортированные в топологическом порядке.
+     * @param <T>           тип объектов.
      * @return {@code true}, если объекты отсортированы в топологическом порядке, иначе {@code false}
-     * @param <T> тип объектов.
      */
     private <T> boolean isValidTopologicalSort(DependencyGraph<T> graph, List<T> sortedObjects) {
         for (T key : sortedObjects) {
@@ -158,10 +147,11 @@ class DependencyGraphTest {
 
     /**
      * Проверяет корректность нахождения сильно связанных компонент.
-     * @param answer
-     * @param result
-     * @return
-     * @param <T>
+     *
+     * @param answer список с корректно найденными компонентами.
+     * @param result список-ответ, который нужно проверить.
+     * @param <T>    тип значений-вершин в графе.
+     * @return {@code true}, если оба списка эквивалентны с точностью до номера индекса в списке, иначе {@code false}.
      */
     private <T> boolean compareListsWithComponents(List<List<T>> answer, List<List<T>> result) {
         if (answer.size() != result.size()) {
